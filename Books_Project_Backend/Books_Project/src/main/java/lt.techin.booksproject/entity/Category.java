@@ -1,4 +1,4 @@
-package lt.techin.Books_Project.entity;
+package lt.techin.booksproject.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

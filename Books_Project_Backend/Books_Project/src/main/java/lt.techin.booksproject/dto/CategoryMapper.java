@@ -1,6 +1,6 @@
-package lt.techin.Books_Project.dto;
+package lt.techin.booksproject.dto;
 
-import lt.techin.Books_Project.entity.Category;
+import lt.techin.booksproject.entity.Category;
 
 public class CategoryMapper {
     public static Category toEntity(CategoryRequestDto dto) {

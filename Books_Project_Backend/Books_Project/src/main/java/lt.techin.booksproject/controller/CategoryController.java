@@ -1,11 +1,11 @@
-package lt.techin.Books_Project.controller;
+package lt.techin.booksproject.controller;
 
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lt.techin.Books_Project.dto.CategoryRequestDto;
-import lt.techin.Books_Project.dto.CategoryResponseDto;
-import lt.techin.Books_Project.service.CategoryService;
+import lt.techin.booksproject.dto.CategoryRequestDto;
+import lt.techin.booksproject.dto.CategoryResponseDto;
+import lt.techin.booksproject.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

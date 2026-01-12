@@ -1,12 +1,12 @@
-package lt.techin.Books_Project.service;
+package lt.techin.booksproject.service;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lt.techin.Books_Project.dto.CategoryMapper;
-import lt.techin.Books_Project.dto.CategoryRequestDto;
-import lt.techin.Books_Project.dto.CategoryResponseDto;
-import lt.techin.Books_Project.entity.Category;
-import lt.techin.Books_Project.repository.CategoryRepository;
+import lt.techin.booksproject.dto.CategoryMapper;
+import lt.techin.booksproject.dto.CategoryRequestDto;
+import lt.techin.booksproject.dto.CategoryResponseDto;
+import lt.techin.booksproject.entity.Category;
+import lt.techin.booksproject.repository.CategoryRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;

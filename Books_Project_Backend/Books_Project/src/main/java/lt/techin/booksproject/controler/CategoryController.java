@@ -1,4 +1,4 @@
-package lt.techin.booksproject.controller;
+package lt.techin.booksproject.controler;
 
 
 import jakarta.validation.Valid;

@@ -6,14 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="ca3e1e99-213b-4c0a-a20f-7ee10209cf57" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt/techin/Books_Project/BooksProjectApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/BooksProjectApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt/techin/Books_Project/controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/controller/CategoryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt/techin/Books_Project/dto/CategoryMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/dto/CategoryMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt/techin/Books_Project/dto/CategoryRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/dto/CategoryRequestDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt/techin/Books_Project/dto/CategoryResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/dto/CategoryResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt/techin/Books_Project/entity/Category.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/entity/Category.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt/techin/Books_Project/repository/CategoryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/repository/CategoryRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt/techin/Books_Project/service/CategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/service/CategoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/BooksProjectApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/controler/CategoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/dto/CategoryMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/dto/CategoryMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/dto/CategoryRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/dto/CategoryRequestDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/dto/CategoryResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/dto/CategoryResponseDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/entity/Category.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/entity/Category.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/repository/CategoryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/repository/CategoryRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/service/CategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/service/CategoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +31,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/../.." value="ZVH2-34,36,38" />
+        <entry key="$PROJECT_DIR$/../.." value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
@@ -51,13 +52,21 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "ZVH2-34,36,38(bugfix)",
+    "git-widget-placeholder": "ZVH2-mergefix",
     "kotlin-language-version-configured": "true",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="lt.techin.booksproject.service" />
+      <recent name="lt.techin.booksproject.repository" />
+      <recent name="lt.techin.booksproject.entity" />
+      <recent name="lt.techin.booksproject.dto" />
+    </key>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="ca3e1e99-213b-4c0a-a20f-7ee10209cf57" name="Changes" comment="" />

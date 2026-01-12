@@ -2,7 +2,11 @@ package lt.techin.booksproject.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.Setter;
 
+//@Getter
+//@Setter
 public class BookCreateRequest {
 
     //private Long id;
@@ -10,10 +14,10 @@ public class BookCreateRequest {
     private String title;
     private String description;
     @NotNull
-    @Pattern(
-            regexp = "^(97(8|9))?\\d{9}(\\d|X)$",
-            message = "Invalid ISBN format"
-    )
+//    @Pattern(
+//            regexp = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+//            message = "Invalid ISBN format"
+//    )
     private String isbn;
     private String picture;
     private Long numberOfPages;

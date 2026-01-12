@@ -1,4 +1,4 @@
-package lt.techin.Books_Project.dto;
+package lt.techin.booksproject.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

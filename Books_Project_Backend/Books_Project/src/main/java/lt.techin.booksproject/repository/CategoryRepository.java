@@ -1,6 +1,6 @@
-package lt.techin.Books_Project.repository;
+package lt.techin.booksproject.repository;
 
-import lt.techin.Books_Project.entity.Category;
+import lt.techin.booksproject.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {

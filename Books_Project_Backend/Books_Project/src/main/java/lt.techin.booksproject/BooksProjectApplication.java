@@ -1,4 +1,4 @@
-package lt.techin.Books_Project;
+package lt.techin.booksproject;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

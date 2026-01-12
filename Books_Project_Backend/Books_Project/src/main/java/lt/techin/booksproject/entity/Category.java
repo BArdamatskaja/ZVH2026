@@ -19,7 +19,7 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne
+    @OneToMany
     @JoinColumn(name = "book_id", nullable = true)
     private Book book;
 }

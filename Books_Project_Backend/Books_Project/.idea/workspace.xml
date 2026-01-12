@@ -5,16 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ca3e1e99-213b-4c0a-a20f-7ee10209cf57" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/BooksProjectApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/controler/CategoryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/dto/CategoryMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/dto/CategoryMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/dto/CategoryRequestDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/dto/CategoryRequestDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/dto/CategoryResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/dto/CategoryResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/entity/Category.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/entity/Category.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/repository/CategoryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/repository/CategoryRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/lt.techin.booksproject/service/CategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/service/CategoryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/controler/BookControler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/controler/BookControler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/dto/BookCreateRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/dto/BookCreateRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/entity/Book.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/entity/Book.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/entity/Category.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/entity/Category.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/service/BookService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/service/BookService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/service/CategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/lt/techin/booksproject/service/CategoryService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,10 +47,11 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.BooksProjectApplication.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "ZVH2-mergefix",
+    "git-widget-placeholder": "ZVH2-34/27-bugfix",
     "kotlin-language-version-configured": "true",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.0",

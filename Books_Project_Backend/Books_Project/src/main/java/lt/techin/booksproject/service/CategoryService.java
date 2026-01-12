@@ -6,6 +6,7 @@ import lt.techin.booksproject.dto.CategoryMapper;
 import lt.techin.booksproject.dto.CategoryRequestDto;
 import lt.techin.booksproject.dto.CategoryResponseDto;
 import lt.techin.booksproject.entity.Category;
+import lt.techin.booksproject.repository.BookRepository;
 import lt.techin.booksproject.repository.CategoryRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

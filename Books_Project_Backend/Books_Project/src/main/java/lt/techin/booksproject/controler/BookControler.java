@@ -31,8 +31,7 @@ public class BookControler {
         book.setIsbn(bookCreateRequest.getIsbn());
         book.setPicture(bookCreateRequest.getPicture());
         book.setNumberOfPages(bookCreateRequest.getNumberOfPages());
-        book.setCategoryId(bookCreateRequest.getCategoryId());
-
+book.getCategory().setId(bookCreateRequest.getId());
         return bookService.createBook(book);
     }
 
@@ -60,7 +59,7 @@ public class BookControler {
         bookFromDb.setIsbn(book.getIsbn());
         bookFromDb.setPicture(book.getPicture());
         bookFromDb.setNumberOfPages(book.getNumberOfPages());
-        bookFromDb.setCategoryId(book.getCategoryId());
+        bookFromDb.getCategory().setId(book.getId());
         return ResponseEntity.ok(bookService.getBookById(id));
     }
 }

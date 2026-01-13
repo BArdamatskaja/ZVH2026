@@ -2,6 +2,9 @@ package lt.techin.booksproject.controler;
 
 
 import jakarta.validation.Valid;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lt.techin.booksproject.dto.BookCreateRequest;
 import lt.techin.booksproject.entity.Book;
 import lt.techin.booksproject.service.BookService;
@@ -14,14 +17,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/books")
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class BookControler {
 
     private static final Logger log = LoggerFactory.getLogger(BookControler.class);
     private final BookService bookService;
 
-    public BookControler (BookService bookService){
-        this.bookService = bookService;
-    }
 
     @PostMapping
     public Book createBook (@Valid @RequestBody BookCreateRequest bookCreateRequest) {

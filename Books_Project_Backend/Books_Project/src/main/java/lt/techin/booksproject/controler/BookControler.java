@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lt.techin.booksproject.dto.BookCreateRequest;
 import lt.techin.booksproject.entity.Book;
+import lt.techin.booksproject.entity.Category;
+import lt.techin.booksproject.repository.CategoryRepository;
 import lt.techin.booksproject.service.BookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,7 @@ public class BookControler {
 
     private static final Logger log = LoggerFactory.getLogger(BookControler.class);
     private final BookService bookService;
+    private final CategoryRepository categoryRepository;
 
 
     @PostMapping
@@ -34,7 +37,9 @@ public class BookControler {
         book.setIsbn(bookCreateRequest.getIsbn());
         book.setPicture(bookCreateRequest.getPicture());
         book.setNumberOfPages(bookCreateRequest.getNumberOfPages());
-book.getCategory().setId(bookCreateRequest.getId());
+
+        Category category = categoryRepository.findById(bookCreateRequest.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found"));
+        book.setCategory(category);
         return bookService.createBook(book);
     }
 

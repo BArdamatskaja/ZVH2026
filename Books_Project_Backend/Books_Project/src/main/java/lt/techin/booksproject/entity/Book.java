@@ -21,6 +21,6 @@ public class Book {
     private Long numberOfPages;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = true)
+    @JoinColumn(name = "category_id")
     private Category category;
 }

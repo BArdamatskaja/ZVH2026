@@ -1,6 +1,5 @@
 package lt.techin.booksproject.entity;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,13 +13,14 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
     private String description;
     private String isbn;
     private String picture;
     private Long numberOfPages;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = true)
-    private Category category;
-}
+@ManyToOne(fetch = FetchType.LAZY)
+@JoinColumn(name = "category_id", nullable = false)
+private Category category;
+

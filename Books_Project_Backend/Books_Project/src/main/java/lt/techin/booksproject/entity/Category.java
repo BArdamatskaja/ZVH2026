@@ -1,9 +1,14 @@
 package lt.techin.booksproject.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -19,7 +24,8 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany
-    @JoinColumn(name = "book_id", nullable = true)
-    private Book book;
+@OneToMany(mappedBy = "category")
+@JsonIgnore
+private List<Book> books = new ArrayList<>();
+
 }

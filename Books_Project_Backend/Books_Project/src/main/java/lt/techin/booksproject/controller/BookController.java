@@ -1,4 +1,4 @@
-package lt.techin.booksproject.controler;
+package lt.techin.booksproject.controller;
 
 
 import jakarta.validation.Valid;
@@ -22,9 +22,9 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class BookControler {
+public class BookController {
 
-    private static final Logger log = LoggerFactory.getLogger(BookControler.class);
+    private static final Logger log = LoggerFactory.getLogger(BookController.class);
     private final BookService bookService;
     private final CategoryRepository categoryRepository;
 

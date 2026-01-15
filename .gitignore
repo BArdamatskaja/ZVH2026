@@ -27,3 +27,7 @@ Thumbs.db
 
 # Maven
 **/target/
+
+# Prevent accidental npm installs at repo root
+/package-lock.json
+/node_modules/

@@ -14,13 +14,10 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 1️⃣ DTO validation errors (@NotBlank, @Email, etc.)
+    // 1) DTO validation errors (@NotBlank, @Email, etc.)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiErrorResponse> handleValidationErrors(
-            MethodArgumentNotValidException ex
-    ) {
+    public ResponseEntity<ApiErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
         Map<String, String> fieldErrors = new HashMap<>();
-
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             fieldErrors.put(error.getField(), error.getDefaultMessage());
         }
@@ -34,11 +31,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
-    // 2️⃣ Duplicate email – service layer
+    // 2) Duplicate email – service layer
     @ExceptionHandler(DuplicateEmailException.class)
-    public ResponseEntity<ApiErrorResponse> handleDuplicateEmail(
-            DuplicateEmailException ex
-    ) {
+    public ResponseEntity<ApiErrorResponse> handleDuplicateEmail(DuplicateEmailException ex) {
         // IMPORTANT: message must be stable for FE (do NOT include email)
         ApiErrorResponse response = new ApiErrorResponse(
                 "EMAIL_ALREADY_EXISTS",
@@ -49,11 +44,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
-    // 3️⃣ Duplicate email – DB constraint fallback
+    // 3) Duplicate email – DB constraint fallback
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ApiErrorResponse> handleDataIntegrityViolation(
-            DataIntegrityViolationException ex
-    ) {
+    public ResponseEntity<ApiErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         ApiErrorResponse response = new ApiErrorResponse(
                 "EMAIL_ALREADY_EXISTS",
                 "Email already exists",

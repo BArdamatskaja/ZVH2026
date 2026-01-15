@@ -22,7 +22,7 @@ export default function Categories() {
 
   const handleSave = (name) => {
     if (editCategory) {
-      updateCategory(editCategory, { name }).then(loadCategories);
+      updateCategory(editCategory.id, { name }).then(loadCategories);
     } else {
       createCategory({ name }).then(loadCategories);
     }

@@ -39,9 +39,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleDuplicateEmail(
             DuplicateEmailException ex
     ) {
+        // IMPORTANT: message must be stable for FE (do NOT include email)
         ApiErrorResponse response = new ApiErrorResponse(
                 "EMAIL_ALREADY_EXISTS",
-                ex.getMessage(),
+                "Email already exists",
                 Map.of("email", "This email is already registered")
         );
 

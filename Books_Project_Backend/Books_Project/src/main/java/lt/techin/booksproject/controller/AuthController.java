@@ -1,0 +1,23 @@
+package lt.techin.booksproject.controller;
+
+import jakarta.validation.Valid;
+import lt.techin.booksproject.dto.auth.RegisterRequestDTO;
+import lt.techin.booksproject.dto.auth.RegisterResponseDTO;
+import lt.techin.booksproject.service.AuthService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/auth")
+public class AuthController {
+
+    private final AuthService authService;
+
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    public RegisterResponseDTO register(@Valid @RequestBody RegisterRequestDTO request) {
+        return authService.register(request);
+    }
+}

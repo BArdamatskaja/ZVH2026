@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("api/v1/books")
 @Getter
@@ -31,16 +32,7 @@ public class BookController {
 
     @PostMapping
     public Book createBook (@Valid @RequestBody BookCreateRequest bookCreateRequest) {
-        Book book = new Book();
-        book.setTitle(bookCreateRequest.getTitle());
-        book.setDescription(bookCreateRequest.getDescription());
-        book.setIsbn(bookCreateRequest.getIsbn());
-        book.setPicture(bookCreateRequest.getPicture());
-        book.setNumberOfPages(bookCreateRequest.getNumberOfPages());
-
-        Category category = categoryRepository.findById(bookCreateRequest.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found"));
-        book.setCategory(category);
-        return bookService.createBook(book);
+        return bookService.createBook(bookCreateRequest);
     }
 
     @GetMapping
@@ -60,14 +52,8 @@ public class BookController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Book> updateBook (@PathVariable Long id, @RequestBody Book book) {
-        Book bookFromDb = bookService.getBookById(id);
-        bookFromDb.setTitle(book.getTitle());
-        bookFromDb.setDescription(book.getDescription());
-        bookFromDb.setIsbn(book.getIsbn());
-        bookFromDb.setPicture(book.getPicture());
-        bookFromDb.setNumberOfPages(book.getNumberOfPages());
-        bookFromDb.getCategory().setId(book.getId());
-        return ResponseEntity.ok(bookService.getBookById(id));
+    public ResponseEntity<Book> updateBook (@PathVariable Long id, @Valid @RequestBody BookCreateRequest updateRequest) {
+   Book updatedBook = bookService.updateBook(id, updateRequest);
+   return ResponseEntity.ok(updatedBook);
     }
 }

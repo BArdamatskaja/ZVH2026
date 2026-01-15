@@ -1,9 +1,9 @@
 package lt.techin.booksproject.service;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lt.techin.booksproject.dto.BookCreateRequest;
 import lt.techin.booksproject.entity.Book;
+import lt.techin.booksproject.entity.Category;
 import lt.techin.booksproject.repository.BookRepository;
 import lt.techin.booksproject.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
@@ -18,33 +18,51 @@ public class BookService {
     private final CategoryRepository categoryRepository;
 
 
-    public Book createBook(Book book){
-        return  bookRepository.save(book);
+    public Book createBook(BookCreateRequest createRequest) {
+        Book book = new Book();
+        book.setTitle(createRequest.getTitle());
+        book.setDescription(createRequest.getDescription());
+        book.setIsbn(createRequest.getIsbn());
+        book.setPicture(createRequest.getPicture());
+        book.setNumberOfPages(createRequest.getNumberOfPages());
+
+        Category category = categoryRepository.findById(createRequest.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+        book.setCategory(category);
+
+        return bookRepository.save(book);
     }
 
-    public List<Book> getAllBooks(){
+        public List<Book> getAllBooks(){
         return bookRepository.findAll();
     }
 
     public Book getBookById (Long id){
-        return  bookRepository.findById(id).get();
+        return  bookRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Book not found"));
     }
 
-    public List<Book> deleteBookById (Long id){
+    public void deleteBookById (Long id){
+        if (!bookRepository.existsById(id)) {
+            throw new RuntimeException("Book not found with id: " + id);
+        }
+
         bookRepository.deleteById(id);
-        return bookRepository.findAll();
     }
 
-    public Book updateBook (Long id, Book updateBook){
+    public Book updateBook (Long id, BookCreateRequest updateRequest){
         Book existingBook = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
 
-        existingBook.setTitle(updateBook.getTitle());
-        existingBook.setDescription(updateBook.getDescription());
-        existingBook.setIsbn(updateBook.getIsbn());
-        existingBook.setPicture(updateBook.getPicture());
-        existingBook.setNumberOfPages(updateBook.getNumberOfPages());
-        existingBook.getCategory().setId(updateBook.getId());
+        existingBook.setTitle(updateRequest.getTitle());
+        existingBook.setDescription(updateRequest.getDescription());
+        existingBook.setIsbn(updateRequest.getIsbn());
+        existingBook.setPicture(updateRequest.getPicture());
+        existingBook.setNumberOfPages(updateRequest.getNumberOfPages());
+
+        Category category = categoryRepository.findById(updateRequest.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+        existingBook.setCategory(category);
 
         return bookRepository.save(existingBook);
     }

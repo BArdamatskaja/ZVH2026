@@ -20,7 +20,7 @@ public class BookCreateRequest {
 //    )
     private String isbn;
     private String picture;
-    private Long numberOfPages;
+    private Integer numberOfPages;
     @NotNull
     private Long categoryId;
 

@@ -11,6 +11,11 @@ export default function CategoryForm({ onSave, editCategory, onCancel }) {
     e.preventDefault();
     onSave(name);
     setName("");
+    alert(
+      editCategory
+        ? "Category updated successfully!"
+        : "Category added successfully!"
+    );
   };
 
   return (
@@ -19,6 +24,7 @@ export default function CategoryForm({ onSave, editCategory, onCancel }) {
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Category name"
+        required
       />
       <button>{editCategory ? "Update" : "Add"}</button>
       {editCategory && <button onClick={onCancel}>Cancel</button>}

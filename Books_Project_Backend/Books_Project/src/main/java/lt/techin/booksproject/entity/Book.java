@@ -18,7 +18,7 @@ public class Book {
     private String description;
     private String isbn;
     private String picture;
-    private Long numberOfPages;
+    private Integer numberOfPages;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)

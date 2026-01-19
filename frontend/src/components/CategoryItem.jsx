@@ -3,7 +3,7 @@ export default function CategoryItem({ category, onEdit, onDelete }) {
     <li>
       {category.name}
       <button onClick={() => onEdit(category)}>Edit</button>
-      <button onClick={() => onDelete(category)}>Delete</button>
+      <button onClick={() => onDelete(category.id)}>Delete</button>
     </li>
   );
 }

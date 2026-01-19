@@ -1,12 +1,37 @@
 import { useState } from "react";
+import { register } from "../../services/authService";
 
 export default function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // ZVH2-42: UI-only task (no API)
+
+    // ZVH2-53: minimal state handling (no client-side validation)
+    setSuccessMessage("");
+    setErrorMessage("");
+    setLoading(true);
+
+    try {
+      await register({ email, password });
+      setSuccessMessage("Account created");
+      setEmail("");
+      setPassword("");
+    } catch (error) {
+      const backendMsg =
+        error?.response?.data?.message ||
+        error?.response?.data ||
+        "Registration failed";
+
+      setErrorMessage(String(backendMsg));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -35,12 +60,12 @@ export default function RegisterForm() {
         />
       </div>
 
-      <button
-        type="submit"
-        disabled
-      >
-        Register
+      <button type="submit" disabled={loading}>
+        {loading ? "Registering..." : "Register"}
       </button>
+
+      {successMessage && <p>{successMessage}</p>}
+      {errorMessage && <p>{errorMessage}</p>}
     </form>
   );
 }

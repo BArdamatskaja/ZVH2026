@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   createCategory,
   deleteCategory,
+  getCategoryById,
   getCategories,
   updateCategory,
 } from "../services/categoryService";
@@ -11,6 +12,7 @@ import CategoryList from "./CategoryList";
 export default function Categories() {
   const [categories, setCategories] = useState([]);
   const [editCategory, setEditCategory] = useState(null);
+  const [searchId, setSearchId] = useState("");
 
   useEffect(() => {
     loadCategories();
@@ -33,9 +35,31 @@ export default function Categories() {
 
   const handleDelete = (id) => deleteCategory(id).then(loadCategories);
 
+  const handleSearchClick = () => {
+    if (!searchId) return;
+
+    getCategoryById(searchId)
+      .then((res) => {
+        handleEdit(res.data);
+        setSearchId("");
+      })
+      .catch(() => {
+        alert("Category not found!");
+      });
+  };
+
   return (
     <div>
       <h2>Categories</h2>
+      <div>
+        <input
+          type="text"
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+          placeholder="Search category by ID"
+        />
+        <button onClick={handleSearchClick}>Search</button>
+      </div>
       <CategoryForm
         onSave={handleSave}
         editCategory={editCategory}

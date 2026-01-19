@@ -1,14 +1,14 @@
-import axios from "axios";
+import httpClient from "./httpClient";
 
-const API_URL = "http://localhost:8080/api/v1/books/categories";
+const API_URL = "/api/v1/books/categories";
 
-export const getCategories = () => axios.get(API_URL);
+export const getCategories = () => httpClient.get(API_URL);
 
-export const getCategoryById = (id) => axios.get(`${API_URL}/${id}`);
+export const getCategoryById = (id) => httpClient.get(`${API_URL}/${id}`);
 
-export const createCategory = (category) => axios.post(API_URL, category);
+export const createCategory = (category) => httpClient.post(API_URL, category);
 
 export const updateCategory = (id, category) =>
-  axios.put(`${API_URL}/${id}`, category);
+  httpClient.put(`${API_URL}/${id}`, category);
 
-export const deleteCategory = (id) => axios.delete(`${API_URL}/${id}`);
+export const deleteCategory = (id) => httpClient.delete(`${API_URL}/${id}`);

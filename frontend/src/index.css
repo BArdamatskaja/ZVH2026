@@ -65,4 +65,32 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+
+  .field-error {
+    margin-top: 6px;
+    font-size: 0.875rem;
+    color: #c62828;
+  }
+
+  .password-field {
+    position: relative;
+    display: inline-block;
+  }
+
+  .password-field input {
+    padding-right: 44px; /* vieta mygtukui */
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 6px; /* nedidelis tarpelis nuo krašto */
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 4px;
+  }
 }

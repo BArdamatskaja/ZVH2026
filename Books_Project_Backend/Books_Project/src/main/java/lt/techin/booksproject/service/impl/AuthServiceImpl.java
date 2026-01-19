@@ -4,9 +4,11 @@ import lt.techin.booksproject.dto.auth.RegisterRequestDTO;
 import lt.techin.booksproject.dto.auth.RegisterResponseDTO;
 import lt.techin.booksproject.entity.Role;
 import lt.techin.booksproject.entity.User;
+import lt.techin.booksproject.exception.DuplicateEmailException;
 import lt.techin.booksproject.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import lt.techin.booksproject.service.AuthService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,14 +16,22 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public RegisterResponseDTO register(RegisterRequestDTO request) {
 
+        // 1) Duplicate email check (service layer)
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new DuplicateEmailException(request.getEmail());
+        }
+
+        // 2) Hash password with BCrypt
+        String hashedPassword = passwordEncoder.encode(request.getPassword());
+
         User user = User.builder()
                 .email(request.getEmail())
-                // TODO (ZVH2-52): replace with BCrypt hash
-                .passwordHash(request.getPassword())
+                .passwordHash(hashedPassword)
                 .role(Role.USER)
                 .build();
 

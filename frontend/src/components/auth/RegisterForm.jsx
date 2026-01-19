@@ -1,27 +1,70 @@
-import { useState } from "react";
-import { register } from "../../services/authService";
+import { useMemo, useState } from "react";
+import { register } from "../../services/authService.js";
+import { validateRegister } from "../../utils/validation/registerValidation.js";
 
 export default function RegisterForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [touched, setTouched] = useState({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const errors = useMemo(() => validateRegister(values), [values]);
+  const isFormValid = useMemo(() => Object.keys(errors).length === 0, [errors]);
+
+  function shouldShowError(field) {
+    return Boolean((touched[field] || submitAttempted) && errors[field]);
+  }
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setValues((prev) => ({ ...prev, [name]: value }));
+  }
+
+  function handleBlur(e) {
+    const { name } = e.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ZVH2-53: minimal state handling (no client-side validation)
+    setSubmitAttempted(true);
+
+    // FE validacija prieš API
+    if (!isFormValid) {
+      setSuccessMessage("");
+      setErrorMessage("");
+      setTouched({
+        email: true,
+        password: true,
+        confirmPassword: true,
+      });
+      return;
+    }
+
     setSuccessMessage("");
     setErrorMessage("");
     setLoading(true);
 
     try {
-      await register({ email, password });
+      // Backend'ui siunčiam tik tai, ką jis priima
+      await register({ email: values.email, password: values.password });
+
       setSuccessMessage("Account created");
-      setEmail("");
-      setPassword("");
+      setValues({ email: "", password: "", confirmPassword: "" });
+      setTouched({});
+      setSubmitAttempted(false);
+      setShowPassword(false);
     } catch (error) {
       const backendMsg =
         error?.response?.data?.message ||
@@ -35,32 +78,82 @@ export default function RegisterForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+    >
       <div>
         <label htmlFor="email">Email</label>
         <input
           id="email"
+          name="email"
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={values.email}
+          onChange={handleChange}
+          onBlur={handleBlur}
           placeholder="email@example.com"
           autoComplete="email"
+          aria-invalid={shouldShowError("email")}
         />
+        {shouldShowError("email") && (
+          <p className="field-error">{errors.email}</p>
+        )}
       </div>
 
       <div>
         <label htmlFor="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
-          autoComplete="new-password"
-        />
+
+        <div className="password-field">
+          <input
+            id="password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            value={values.password}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            placeholder="••••••••"
+            autoComplete="new-password"
+            aria-invalid={shouldShowError("password")}
+          />
+
+          <button
+            type="button"
+            className="password-toggle"
+            onClick={() => setShowPassword((v) => !v)}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? "🙈" : "👁️"}
+          </button>
+        </div>
+
+        {shouldShowError("password") && (
+          <p className="field-error">{errors.password}</p>
+        )}
       </div>
 
-      <button type="submit" disabled={loading}>
+      <div>
+        <label htmlFor="confirmPassword">Confirm password</label>
+        <input
+          id="confirmPassword"
+          name="confirmPassword"
+          type="password"
+          value={values.confirmPassword}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          placeholder="••••••••"
+          autoComplete="new-password"
+          aria-invalid={shouldShowError("confirmPassword")}
+        />
+        {shouldShowError("confirmPassword") && (
+          <p className="field-error">{errors.confirmPassword}</p>
+        )}
+      </div>
+
+      {}
+      <button
+        type="submit"
+        disabled={loading}
+      >
         {loading ? "Registering..." : "Register"}
       </button>
 

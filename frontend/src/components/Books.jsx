@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   createBook,
   deleteBook,
@@ -12,38 +12,69 @@ import BookList from "./BookList";
 
 export default function Books() {
   const [books, setBooks] = useState([]);
+  const [categories, setCategories] = useState([]);
+
   const [editBook, setEditBook] = useState(null);
   const [searchBook, setSearchBook] = useState("");
-  const [categories, setCategories] = useState([]);
+
+  const [categoryId, setCategoryId] = useState("");
+  const [title, setTitle] = useState("");
+
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const loadCategories = () => {
+    return getCategories()
+      .then((res) => setCategories(res.data))
+      .catch(() => setError("Failed to load categories"));
+  };
 
   useEffect(() => {
-    loadBooks();
     loadCategories();
   }, []);
 
-  const loadBooks = () => {
-    getBooks().then((res) => setBooks(res.data));
+  const loadBooks = async (filters = {}) => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await getBooks(filters);
+      setBooks(res.data);
+    } catch {
+      setError("faild to load books");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const loadCategories = () => {
-    getCategories()
-      .then((res) => {
-        console.log("📚 Loaded categories:", res.data);
-        setCategories(res.data);
-      })
-      .catch((err) => {
-        console.error("Error loading categories:", err);
-      });
+  useEffect(() => {
+    loadBooks();
+  }, []);
+
+  const handleApplyFilters = () => {
+    const params = {};
+    if (categoryId) params.categoryId = categoryId;
+    if (title.trim()) params.title = title.trim();
+    loadBooks(params);
   };
+
+  const clearFilters = () => {
+    setCategoryId("");
+    setTitle("");
+  };
+
+  const categoryNameById = useMemo(() => {
+    const map = new Map();
+    categories.forEach((c) => map.set(String(c.id), c.name));
+    return map;
+  }, [categories]);
 
   const handleSave = async (bookData) => {
     setLoading(true);
     try {
       const dataList = {
         ...bookData,
-        categoryId: parseInt(bookData.categoryId),
-        numberOfPages: parseInt(bookData.numberOfPages) || 0,
+        categoryId: parseInt(bookData.categoryId, 10),
+        numberOfPages: parseInt(bookData.numberOfPages, 10) || 0,
       };
 
       if (editBook) {
@@ -51,21 +82,30 @@ export default function Books() {
       } else {
         await createBook(dataList);
       }
-      loadBooks();
-      loadCategories();
+      const params = {};
+      if (categoryId) params.categoryId = categoryId;
+      if (title.trim()) params.title = title.trim();
+      await loadBooks(params);
+
+      await loadCategories();
       setEditBook(null);
-    } catch (error) {
-      console.error("Error saving book:", error);
-      alert(
-        "Error saving book: " + (error.response?.data?.message || error.message)
-      );
+    } catch (err) {
+      console.error("Error saving book:", err);
+      setError("Error saving book");
     } finally {
       setLoading(false);
     }
   };
 
   const handleEdit = (book) => setEditBook(book);
-  const handleDelete = (id) => deleteBook(id).then(loadBooks);
+
+  const handleDelete = async (id) => {
+    await deleteBook(id);
+    const params = {};
+    if (categoryId) params.categoryId = categoryId;
+    if (title.trim()) params.title = title.trim();
+    loadBooks(params);
+  };
 
   const handleSearchClick = () => {
     if (!searchBook) return;
@@ -84,20 +124,51 @@ export default function Books() {
     <div>
       <h2>Books</h2>
       <div>
-        <input
-          type="text"
-          value={searchBook}
-          onChange={(e) => setSearchBook(e.target.value)}
-          placeholder="Search book by ID"
-        />
-        <button onClick={handleSearchClick}>Search</button>
+        <div className="flex flex-col gap-3 md:flex-row md:items-end">
+          <div className="flex flex-col gap-1 md:w-64">
+            <label>Category</label>
+            <select
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+            >
+              <option value="">All categories</option>
+              {categories.map((c) => (
+                <option
+                  key={c.id}
+                  value={c.id}
+                >
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-1 flex-col gap-1">
+            <label>Title</label>
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Search by title..."
+            />
+          </div>
+          <div className="flex gap-2">
+            <button onClick={handleApplyFilters}>Apply</button>
+
+            <button onClick={clearFilters}>Clear</button>
+          </div>
+        </div>
       </div>
+      {error && <div>{error}</div>}
+
+      {loading && <div>Loading...</div>}
+
       <BookForm
         onSave={handleSave}
         editBook={editBook}
         onCancel={() => setEditBook(null)}
         categories={categories}
       />
+
       <BookList
         books={books}
         onEdit={handleEdit}

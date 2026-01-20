@@ -66,4 +66,20 @@ public class BookService {
 
         return bookRepository.save(existingBook);
     }
+    public List<Book> getBooks(Long categoryId, String title) {
+        boolean hasCategory = categoryId != null;
+        boolean hasTitle = title != null && !title.trim().isEmpty();
+        String t = hasTitle ? title.trim() : null;
+
+        if (hasCategory && hasTitle) {
+            return bookRepository.findByCategory_IdAndTitleContainingIgnoreCase(categoryId, t);
+        }
+        if (hasCategory) {
+            return bookRepository.findByCategory_Id(categoryId);
+        }
+        if (hasTitle) {
+            return bookRepository.findByTitleContainingIgnoreCase(t);
+        }
+        return bookRepository.findAll();
+    }
 }

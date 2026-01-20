@@ -1,18 +1,31 @@
 import axios from "axios";
-
-const baseURL = import.meta.env.VITE_API_BASE_URL;
-
-if (!baseURL) {
-  throw new Error(
-    "Missing VITE_API_BASE_URL. Create frontend/.env with VITE_API_BASE_URL=http://localhost:8080",
-  );
-}
+import { getAccessToken } from "../components/auth/authTokenService";
 
 export const httpClient = axios.create({
-  baseURL,
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  },
-  withCredentials: false,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
+
+httpClient.interceptors.request.use((config) => {
+  const token = getAccessToken();
+  if (!token) return config;
+
+  config.headers = config.headers ?? {};
+  if (!config.headers.Authorization) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+httpClient.interceptors.request.use(
+  (config) => {
+    const token = getAccessToken();
+    if (!token) return config;
+
+    config.headers = config.headers ?? {};
+    if (!config.headers.Authorization) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);

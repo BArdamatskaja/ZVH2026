@@ -1,85 +1,90 @@
 import { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
-export default function LoginForm() {
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export default function LoginForm({ onSubmit, setPageError, isSubmitting }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
-  const navigate = useNavigate();
+  const [touched, setTouched] = useState({ email: false, password: false });
+  const [localError, setLocalError] = useState("");
+
+  const validate = () => {
+    if (!email.trim() || !password.trim())
+      return "Email and password are required.";
+    if (!emailRegex.test(email.trim()))
+      return "Please enter a valid email address.";
+    return "";
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
-    setLoading(true);
+    setTouched({ email: true, password: true });
 
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/auth/login",
-        {
-          email,
-          password,
-        }
-      );
-
-      localStorage.setItem("user", JSON.stringify(response.data));
-
-      setSuccess("Login successful!");
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
-    } catch (err) {
-      if (err.response?.data) {
-        setError(err.response.data);
-      } else {
-        setError("Server error");
-      }
-    } finally {
-      setLoading(false);
+    const err = validate();
+    if (err) {
+      setLocalError(err);
+      setPageError?.("");
+      return;
     }
+
+    setLocalError("");
+    setPageError?.("");
+    await onSubmit({ email: email.trim(), password });
   };
 
-  return (
-    <div style={{ maxWidth: 400, margin: "50px auto" }}>
-      <h2>Login</h2>
+  const showEmailError =
+    touched.email && (!email.trim() || !emailRegex.test(email.trim()));
+  const showPasswordError = touched.password && !password.trim();
 
-      <form onSubmit={handleSubmit}>
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="form"
+    >
+      {localError && <div className="errorBox">{localError}</div>}
+
+      <label className="label">
+        Email
         <input
           type="email"
-          placeholder="Email"
+          placeholder="name@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
+          onBlur={() => setTouched((t) => ({ ...t, email: true }))}
+          className={`input ${showEmailError ? "inputError" : ""}`}
+          disabled={isSubmitting}
         />
+      </label>
+      {showEmailError && (
+        <div className="fieldError">
+          {!email.trim() ? "Email is required." : "Email format is invalid."}
+        </div>
+      )}
 
-        <br />
-        <br />
-
+      <label className="label">
+        Password
         <input
           type="password"
-          placeholder="Password"
+          placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
+          onBlur={() => setTouched((t) => ({ ...t, password: true }))}
+          className={`input ${showPasswordError ? "inputError" : ""}`}
+          disabled={isSubmitting}
         />
+      </label>
+      {showPasswordError && (
+        <div className="fieldError">Password is required.</div>
+      )}
 
-        <br />
-        <br />
-
-        <button
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
-    </div>
+      <button
+        type="submit"
+        className="btn"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "Logging in..." : "Login"}
+      </button>
+    </form>
   );
 }

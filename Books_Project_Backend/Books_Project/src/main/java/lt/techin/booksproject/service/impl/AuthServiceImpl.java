@@ -1,5 +1,7 @@
 package lt.techin.booksproject.service.impl;
 
+import lt.techin.booksproject.dto.auth.LoginRequestDTO;
+import lt.techin.booksproject.dto.auth.LoginResponseDTO;
 import lt.techin.booksproject.dto.auth.RegisterRequestDTO;
 import lt.techin.booksproject.dto.auth.RegisterResponseDTO;
 import lt.techin.booksproject.entity.Role;
@@ -21,12 +23,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public RegisterResponseDTO register(RegisterRequestDTO request) {
 
-        // 1) Duplicate email check (service layer)
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new DuplicateEmailException(request.getEmail());
         }
 
-        // 2) Hash password with BCrypt
         String hashedPassword = passwordEncoder.encode(request.getPassword());
 
         User user = User.builder()
@@ -37,6 +37,25 @@ public class AuthServiceImpl implements AuthService {
 
         User saved = userRepository.save(user);
 
-        return new RegisterResponseDTO(saved.getId(), saved.getEmail(), saved.getRole());
+        return new RegisterResponseDTO(saved.getId(),
+                saved.getEmail(),
+                saved.getRole()
+        );
+}
+    @Override
+    public LoginResponseDTO login(LoginRequestDTO request) {
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        return new LoginResponseDTO(
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
+        );
     }
 }

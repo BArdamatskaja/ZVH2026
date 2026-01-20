@@ -1,10 +1,1 @@
-import axios from "axios";
-
-const httpClient = axios.create({
-  baseURL: "http://localhost:8080",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-export default httpClient;
+export { httpClient as default } from "../api/httpClient";

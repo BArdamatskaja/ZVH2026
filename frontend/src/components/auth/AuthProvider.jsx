@@ -1,43 +1,68 @@
-import { useEffect, useMemo, useState } from "react";
-import { setAccessToken, clearAccessToken } from "./authTokenService";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import {
+  readAuthFromStorage,
+  writeAuthToStorage,
+  clearAuthStorage,
+} from "./authStorage";
 
-export function AuthProvider({ children }) {
+export const AuthContext = createContext(null);
+
+export default function AuthProvider({ children }) {
+  const [accessToken, setAccessToken] = useState(null);
   const [user, setUser] = useState(null);
 
-  // ✅ Bootstrap token per useState initializer
-  const [accessTokenState, setAccessTokenState] = useState(() => {
-    return localStorage.getItem("accessToken");
-  });
+  // 🔴 KRITIŠKAI SVARBU ProtectedRoute'ui
+  const [isInitializing, setIsInitializing] = useState(true);
 
-  // ✅ Sync į authTokenService (skirta interceptor'iui)
+  const isAuthenticated = Boolean(accessToken);
+
+  // INIT from localStorage (vieną kartą per app startą)
+  const initFromStorage = useCallback(() => {
+    const stored = readAuthFromStorage();
+
+    if (stored?.accessToken) {
+      setAccessToken(stored.accessToken);
+      setUser(stored.user ?? null);
+    }
+
+    setIsInitializing(false);
+  }, []);
+
   useEffect(() => {
-    if (accessTokenState) setAccessToken(accessTokenState);
-    else clearAccessToken();
-  }, [accessTokenState]);
+    initFromStorage();
+  }, [initFromStorage]);
+
+  const login = useCallback(({ accessToken, user }) => {
+    setAccessToken(accessToken);
+    setUser(user ?? null);
+
+    writeAuthToStorage({ accessToken, user });
+  }, []);
+
+  const logout = useCallback(() => {
+    setAccessToken(null);
+    setUser(null);
+
+    clearAuthStorage();
+  }, []);
 
   const value = useMemo(
     () => ({
+      accessToken,
       user,
-      accessToken: accessTokenState,
-      setUser,
-
-      setAccessToken: (token) => {
-        const normalized = token || null;
-        setAccessTokenState(normalized);
-
-        if (normalized) localStorage.setItem("accessToken", normalized);
-        else localStorage.removeItem("accessToken");
-      }, // ⬅️ ŠITAS KABLELIS buvo būtinas
-
-      logout: () => {
-        setUser(null);
-        setAccessTokenState(null);
-        localStorage.removeItem("accessToken");
-      },
+      isAuthenticated,
+      isInitializing, // 👈 BŪTINA
+      login,
+      logout,
     }),
-    [user, accessTokenState],
+    [accessToken, user, isAuthenticated, isInitializing, login, logout],
   );
 
-  // Kol kas be Context (kaip pas jus projekte)
-  return children;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -1,34 +1,54 @@
+import { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import LoginForm from "../components/auth/LoginForm";
 import { useAuth } from "../components/auth/useAuth";
-import { Navigate, useLocation } from "react-router-dom";
 
 export default function LoginPage() {
-  const { isAuthenticated, isInitializing, loginWithCredentials } = useAuth();
-  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, loginWithCredentials } = useAuth();
+  
+    const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Kur grįžti po login (jei ateita per ProtectedRoute)
-  const from = location.state?.from?.pathname || "/";
-
-  if (isInitializing) {
-    return <div>Loading...</div>;
-  }
-
-  if (isAuthenticated) {
+  if (user) {
     return (
       <Navigate
-        to={from}
+        to="/books"
         replace
       />
     );
   }
 
+  const handleLoginSubmit = async ({ email, password }) => {
+    setError("");
+    setIsSubmitting(true);
+
+try {
+      await loginWithCredentials(email, password);
+      navigate("/books");
+    } catch (err) {
+      const status = err?.status || err?.response?.status;
+      setError(status === 401 ? "Invalid credentials" : "Server error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+
   return (
+    <div>
     <div>
       <h1>Login</h1>
       <p>Enter your credentials to continue.</p>
+    
+        {error && <div>{error}</div>}
 
-      {/* LoginForm tikėtina priima onSubmit({ email, password }) */}
-      <LoginForm onSubmit={loginWithCredentials} />
-    </div>
+        <LoginForm
+          onSubmit={handleLoginSubmit}
+          setPageError={setError}
+          isSubmitting={isSubmitting}
+        />    
+      </div>
+</div?
   );
 }

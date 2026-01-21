@@ -5,7 +5,7 @@ import {
   getCategoryById,
   getCategories,
   updateCategory,
-} from "../services/categoryService";
+} from "../../services/categoryService";
 import CategoryForm from "./CategoryForm";
 import CategoryList from "./CategoryList";
 

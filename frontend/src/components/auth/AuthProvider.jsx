@@ -5,45 +5,28 @@ import {
   useMemo,
   useState,
 } from "react";
-
 import {
   readAuthFromStorage,
   writeAuthToStorage,
   clearAuthStorage,
 } from "./authStorage";
-
 import { login as loginApi } from "../../services/authService";
 
 export const AuthContext = createContext(null);
 
-function extractAccessToken(payload) {
-  return (
-    payload?.accessToken ??
-    payload?.token ??
-    payload?.jwt ??
-    payload?.access_token ??
-    null
-  );
-}
-
 export default function AuthProvider({ children }) {
-  const [accessToken, setAccessToken] = useState(null);
+  const [accessToken, setAccessToken] = useState(null); // paliekam ateičiai
   const [user, setUser] = useState(null);
-
-  // 🔴 KRITIŠKAI SVARBU ProtectedRoute'ui
   const [isInitializing, setIsInitializing] = useState(true);
 
-  const isAuthenticated = Boolean(accessToken);
+  const isAuthenticated = Boolean(user);
 
-  // INIT from localStorage (vieną kartą per app startą)
   const initFromStorage = useCallback(() => {
     const stored = readAuthFromStorage();
-
-    if (stored?.accessToken) {
-      setAccessToken(stored.accessToken);
-      setUser(stored.user ?? null);
+    if (stored?.user) {
+      setUser(stored.user);
+      setAccessToken(stored.accessToken ?? null);
     }
-
     setIsInitializing(false);
   }, []);
 
@@ -51,33 +34,24 @@ export default function AuthProvider({ children }) {
     initFromStorage();
   }, [initFromStorage]);
 
-  // ✅ Set auth state from already-known payload (token/user)
-  const login = useCallback(({ accessToken, user }) => {
-    setAccessToken(accessToken);
+  const login = useCallback(({ user, accessToken }) => {
     setUser(user ?? null);
-
-    writeAuthToStorage({ accessToken, user });
+    setAccessToken(accessToken ?? null);
+    writeAuthToStorage({ user, accessToken });
   }, []);
 
-  // ✅ ZVH2-105: login via credentials through authService + httpClient
   const loginWithCredentials = useCallback(
     async (email, password) => {
       const res = await loginApi({ email, password });
-
-      // axios response -> res.data
       const payload = res?.data ?? res;
 
-      const token = extractAccessToken(payload);
-      const nextUser = payload?.user ?? null;
-
-      if (!token) {
-        throw new Error("Login response does not contain access token.");
+      const nextUser = payload?.user ?? payload;
+      if (!nextUser?.email && !nextUser?.id) {
+        throw new Error("Login response does not contain user data.");
       }
 
-      // Use existing login() to update state + persist
-      login({ accessToken: token, user: nextUser });
-
-      return { accessToken: token, user: nextUser };
+      login({ user: nextUser, accessToken: null });
+      return { user: nextUser };
     },
     [login],
   );
@@ -85,19 +59,22 @@ export default function AuthProvider({ children }) {
   const logout = useCallback(() => {
     setAccessToken(null);
     setUser(null);
-
     clearAuthStorage();
   }, []);
+
+  const role = user?.role;
+  const isAdmin = role === "ADMIN" || role === "ROLE_ADMIN";
 
   const value = useMemo(
     () => ({
       accessToken,
       user,
       isAuthenticated,
-      isInitializing, // 👈 BŪTINA
+      isInitializing,
       login,
-      loginWithCredentials, // 👈 ZVH2-105
+      loginWithCredentials,
       logout,
+      isAdmin,
     }),
     [
       accessToken,
@@ -107,6 +84,7 @@ export default function AuthProvider({ children }) {
       login,
       loginWithCredentials,
       logout,
+      isAdmin,
     ],
   );
 

@@ -6,11 +6,11 @@ export function readAuthFromStorage() {
     if (!raw) return null;
 
     const parsed = JSON.parse(raw);
-    // Minimal validation
-    if (!parsed?.accessToken) return null;
+
+    if (!parsed?.user) return null;
 
     return {
-      accessToken: parsed.accessToken,
+      accessToken: parsed.accessToken ?? null, 
       user: parsed.user ?? null,
     };
   } catch {
@@ -20,7 +20,7 @@ export function readAuthFromStorage() {
 
 export function writeAuthToStorage({ accessToken, user }) {
   const payload = {
-    accessToken,
+    accessToken: accessToken ?? null,
     user: user ?? null,
     savedAt: new Date().toISOString(),
   };

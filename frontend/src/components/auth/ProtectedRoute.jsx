@@ -5,8 +5,7 @@ export default function ProtectedRoute() {
   const { isAuthenticated, isInitializing } = useAuth();
   const location = useLocation();
 
-  // Svarbu: kad po refresh nevyktų "false redirect" kol initFromStorage dar vyksta
-  if (isInitializing) return null; // arba: <div>Loading...</div>
+  if (isInitializing) return null; 
 
   if (!isAuthenticated) {
     return (

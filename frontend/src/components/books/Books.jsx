@@ -5,8 +5,8 @@ import {
   getBook,
   getBooks,
   updateBook,
-} from "../services/bookService";
-import { getCategories } from "../services/categoryService";
+} from "../../services/bookService";
+import { getCategories } from "../../services/categoryService";
 import BookForm from "./BookForm";
 import BookList from "./BookList";
 

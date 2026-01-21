@@ -31,3 +31,10 @@ Thumbs.db
 # Prevent accidental npm installs at repo root
 /package-lock.json
 /node_modules/
+
+# H2 database files
+*.mv.db
+*.trace.db
+*.lock.db
+/data/
+Books_Project_Backend/data/

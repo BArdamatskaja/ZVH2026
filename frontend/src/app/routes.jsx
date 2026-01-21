@@ -4,12 +4,11 @@ import Home from "../pages/Home/Home";
 import NotFound from "../pages/NotFound/NotFound";
 import Register from "../pages/Register/Register";
 import LoginPage from "../pages/LoginPage";
-
 import MainLayout from "../layouts/MainLayout";
-
-import Books from "../components/Books";
-import Categories from "../components/Categories";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
+import BooksPage from "../pages/BooksPage";
+import BooksAdminPage from "../pages/BooksAdminPage";
+import CategoriesAdminPage from "../pages/CategoriesAdminPage";
 
 const router = createBrowserRouter([
   {
@@ -24,8 +23,9 @@ const router = createBrowserRouter([
       {
         element: <ProtectedRoute />,
         children: [
-          { path: "/books", element: <Books /> },
-          { path: "/categories", element: <Categories /> },
+          { path: "/books", element: <BooksPage /> },
+          { path: "/admin/books", element: <BooksAdminPage /> },
+          { path: "/admin/categories", element: <CategoriesAdminPage /> },
           {
             path: "/app",
             element: (

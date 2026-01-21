@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import LoginForm from "../components/auth/LoginForm";
-import { login as loginApi } from "../services/authService";
-import { useAuth } from "../components/context/AuthContext";
+import { useAuth } from "../components/auth/useAuth";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { user, login } = useAuth();
+  const { user, loginWithCredentials } = useAuth();
 
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -14,7 +13,7 @@ export default function LoginPage() {
   if (user) {
     return (
       <Navigate
-        to="/"
+        to="/books"
         replace
       />
     );
@@ -24,21 +23,17 @@ export default function LoginPage() {
     setError("");
     setIsSubmitting(true);
 
-    try {
-      const res = await loginApi({ email, password });
-      login(res.data);
-
-      navigate("/");
+try {
+      await loginWithCredentials(email, password);
+      navigate("/books");
     } catch (err) {
-      if (err.response?.status === 401) {
-        setError("Invalid credentials");
-      } else {
-        setError("Server error. Try one more time");
-      }
+      const status = err?.status || err?.response?.status;
+      setError(status === 401 ? "Invalid credentials" : "Server error");
     } finally {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <div>

@@ -4,7 +4,6 @@ import {
   clearAuthStorage,
 } from "../components/auth/authStorage";
 
-// ✅ baseURL su fallback, kad aplikacija nevežtų, jei .env nėra
 const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 export const httpClient = axios.create({
@@ -14,11 +13,14 @@ export const httpClient = axios.create({
     "Content-Type": "application/json",
     Accept: "application/json",
   },
-  withCredentials: false,
 });
 
 let isRedirectingToLogin = false;
 
+/**
+ * Normalizuojam axios klaidas,
+ * kad UI galėtų dirbti su vieninga struktūra
+ */
 function normalizeAxiosError(error) {
   if (!error?.response) {
     const isTimeout = error?.code === "ECONNABORTED";
@@ -28,7 +30,10 @@ function normalizeAxiosError(error) {
       message: isTimeout
         ? "Request timeout"
         : "Network error / backend unreachable",
-      details: { code: error?.code, originalMessage: error?.message },
+      details: {
+        code: error?.code,
+        originalMessage: error?.message,
+      },
     };
   }
 
@@ -43,6 +48,11 @@ function normalizeAxiosError(error) {
   };
 }
 
+/**
+ * ZVH2-102 — Request interceptor
+ * Jei turim tokeną → uždedam Bearer
+ * Jei neturim → NIEKO nedarom
+ */
 httpClient.interceptors.request.use(
   (config) => {
     const stored = readAuthFromStorage();
@@ -60,11 +70,24 @@ httpClient.interceptors.request.use(
   (error) => Promise.reject(normalizeAxiosError(error)),
 );
 
+/**
+ * ZVH2-103 — Response interceptor
+ */
 httpClient.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error?.response?.status;
+    const url = error?.config?.url ?? "";
 
+    // 401 iš login/register — NE redirektinam
+    if (
+      status === 401 &&
+      (url.includes("/auth/login") || url.includes("/auth/register"))
+    ) {
+      return Promise.reject(normalizeAxiosError(error));
+    }
+
+    // 401 iš kitur — logout + redirect
     if (status === 401) {
       clearAuthStorage();
 
@@ -72,6 +95,7 @@ httpClient.interceptors.response.use(
         isRedirectingToLogin = true;
 
         const isAlreadyOnLogin = window.location.pathname.startsWith("/login");
+
         if (!isAlreadyOnLogin) {
           window.location.assign("/login?reason=expired");
         }

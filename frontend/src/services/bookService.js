@@ -1,12 +1,13 @@
 import axios from "axios";
-const API_URL = "http://localhost:8080/api/v1/books";
+import httpClient from "./httpClient";
+const API_URL = "/api/v1/books";
 
-export const getBooks = () => axios.get(API_URL);
+export const getBooks = (filters = {}) => httpClient.get(API_URL, {params: filters});
 
-export const getBook = (id) => axios.get(`${API_URL}/${id}`);
+export const getBook = (id) => httpClient.get(`${API_URL}/${id}`);
 
-export const createBook = (books) => axios.post(API_URL, books);
+export const createBook = (books) => httpClient.post(API_URL, books);
 
-export const updateBook = (id, books) => axios.put(`${API_URL}/${id}`, books);
+export const updateBook = (id, books) => httpClient.put(`${API_URL}/${id}`, books);
 
-export const deleteBook = (id) => axios.delete(`${API_URL}/${id}`);
+export const deleteBook = (id) => httpClient.delete(`${API_URL}/${id}`);

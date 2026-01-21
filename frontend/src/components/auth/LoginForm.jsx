@@ -19,6 +19,7 @@ export default function LoginForm({ onSubmit, setPageError, isSubmitting }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setTouched({ email: true, password: true });
 
     const err = validate();
@@ -30,7 +31,11 @@ export default function LoginForm({ onSubmit, setPageError, isSubmitting }) {
 
     setLocalError("");
     setPageError?.("");
-    await onSubmit({ email: email.trim(), password });
+
+    await onSubmit({
+      email: email.trim(),
+      password,
+    });
   };
 
   const showEmailError =
@@ -54,6 +59,7 @@ export default function LoginForm({ onSubmit, setPageError, isSubmitting }) {
           onBlur={() => setTouched((t) => ({ ...t, email: true }))}
           className={`input ${showEmailError ? "inputError" : ""}`}
           disabled={isSubmitting}
+          autoComplete="email"
         />
       </label>
       {showEmailError && (
@@ -72,6 +78,7 @@ export default function LoginForm({ onSubmit, setPageError, isSubmitting }) {
           onBlur={() => setTouched((t) => ({ ...t, password: true }))}
           className={`input ${showPasswordError ? "inputError" : ""}`}
           disabled={isSubmitting}
+          autoComplete="current-password"
         />
       </label>
       {showPasswordError && (

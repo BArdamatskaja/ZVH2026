@@ -1,31 +1,12 @@
 import axios from "axios";
-import { getAccessToken } from "../components/auth/authTokenService";
+
+const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 export const httpClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
-});
-
-httpClient.interceptors.request.use((config) => {
-  const token = getAccessToken();
-  if (!token) return config;
-
-  config.headers = config.headers ?? {};
-  if (!config.headers.Authorization) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-httpClient.interceptors.request.use(
-  (config) => {
-    const token = getAccessToken();
-    if (!token) return config;
-
-    config.headers = config.headers ?? {};
-    if (!config.headers.Authorization) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+  baseURL,
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
   },
-  (error) => Promise.reject(error),
-);
+  withCredentials: false,
+});

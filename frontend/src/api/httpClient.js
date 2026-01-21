@@ -1,9 +1,20 @@
 import axios from "axios";
-import { readAuthFromStorage, clearAuthStorage } from "../components/auth/authStorage";
+import {
+  readAuthFromStorage,
+  clearAuthStorage,
+} from "../components/auth/authStorage";
+
+// ✅ baseURL su fallback, kad aplikacija nevežtų, jei .env nėra
+const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 export const httpClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL,
   timeout: 15000,
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+  withCredentials: false,
 });
 
 let isRedirectingToLogin = false;
@@ -14,7 +25,9 @@ function normalizeAxiosError(error) {
     return {
       type: "network",
       status: null,
-      message: isTimeout ? "Request timeout" : "Network error / backend unreachable",
+      message: isTimeout
+        ? "Request timeout"
+        : "Network error / backend unreachable",
       details: { code: error?.code, originalMessage: error?.message },
     };
   }
@@ -44,7 +57,7 @@ httpClient.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(normalizeAxiosError(error))
+  (error) => Promise.reject(normalizeAxiosError(error)),
 );
 
 httpClient.interceptors.response.use(
@@ -53,7 +66,6 @@ httpClient.interceptors.response.use(
     const status = error?.response?.status;
 
     if (status === 401) {
-      // ✅ Vienas logout kelias: storage clear
       clearAuthStorage();
 
       if (!isRedirectingToLogin) {
@@ -82,7 +94,7 @@ httpClient.interceptors.response.use(
     }
 
     return Promise.reject(normalizeAxiosError(error));
-  }
+  },
 );
 
 export default httpClient;

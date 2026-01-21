@@ -1,13 +1,11 @@
-import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
 import LoginForm from "../components/auth/LoginForm";
 import { useAuth } from "../components/auth/useAuth";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const { user, loginWithCredentials } = useAuth();
-
-  const [error, setError] = useState("");
+  
+    const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (user) {
@@ -37,18 +35,18 @@ try {
 
   return (
     <div>
-      <div>
-        <h1>Login</h1>
-        <p>Enter your credentials to continue.</p>
-
+    <div>
+      <h1>Login</h1>
+      <p>Enter your credentials to continue.</p>
+    
         {error && <div>{error}</div>}
 
         <LoginForm
           onSubmit={handleLoginSubmit}
           setPageError={setError}
           isSubmitting={isSubmitting}
-        />
+        />    
       </div>
-    </div>
+</div?
   );
 }

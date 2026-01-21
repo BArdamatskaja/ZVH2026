@@ -1,105 +1,97 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 
-import { useAuth } from "./useAuth";
-import { login as loginRequest } from "../../services/authService";
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function LoginForm() {
-  const navigate = useNavigate();
-  const location = useLocation();
+export default function LoginForm({ onSubmit, setPageError, isSubmitting }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const { login } = useAuth();
+  const [touched, setTouched] = useState({ email: false, password: false });
+  const [localError, setLocalError] = useState("");
 
-  const from = location.state?.from?.pathname || "/books";
-
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const onChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const validate = () => {
+    if (!email.trim() || !password.trim())
+      return "Email and password are required.";
+    if (!emailRegex.test(email.trim()))
+      return "Please enter a valid email address.";
+    return "";
   };
 
-  const onSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-    setIsSubmitting(true);
 
-    try {
-      const res = await loginRequest(form);
+    setTouched({ email: true, password: true });
 
-      // axios response -> res.data
-      const payload = res?.data ?? res;
-
-      // suderinam su galimais backend field pavadinimais
-      const accessToken =
-        payload?.accessToken ?? payload?.token ?? payload?.jwt ?? payload?.access_token;
-
-      const user = payload?.user ?? null;
-
-      if (!accessToken) {
-        throw new Error("Login response does not contain accessToken/token.");
-      }
-
-      // į Auth state + localStorage (per AuthProvider login() implementaciją)
-      login({ accessToken, user });
-
-      // profesionalus UX: grąžinam į page, kurio norėjo
-      navigate(from, { replace: true });
-    } catch (err) {
-      const msg =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Login failed. Please check your credentials.";
-      setError(msg);
-    } finally {
-      setIsSubmitting(false);
+    const err = validate();
+    if (err) {
+      setLocalError(err);
+      setPageError?.("");
+      return;
     }
+
+    setLocalError("");
+    setPageError?.("");
+
+    await onSubmit({
+      email: email.trim(),
+      password,
+    });
   };
+
+  const showEmailError =
+    touched.email && (!email.trim() || !emailRegex.test(email.trim()));
+  const showPasswordError = touched.password && !password.trim();
 
   return (
-    <div style={{ maxWidth: 420, margin: "0 auto", padding: 16 }}>
-      <h2>Login</h2>
+    <form
+      onSubmit={handleSubmit}
+      className="form"
+    >
+      {localError && <div className="errorBox">{localError}</div>}
 
-      {error && (
-        <div style={{ marginBottom: 12 }}>
-          <strong style={{ color: "red" }}>{error}</strong>
+      <label className="label">
+        Email
+        <input
+          type="email"
+          placeholder="name@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onBlur={() => setTouched((t) => ({ ...t, email: true }))}
+          className={`input ${showEmailError ? "inputError" : ""}`}
+          disabled={isSubmitting}
+          autoComplete="email"
+        />
+      </label>
+      {showEmailError && (
+        <div className="fieldError">
+          {!email.trim() ? "Email is required." : "Email format is invalid."}
         </div>
       )}
 
-      <form onSubmit={onSubmit}>
-        <div style={{ marginBottom: 12 }}>
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            value={form.email}
-            onChange={onChange}
-            required
-            style={{ display: "block", width: "100%", padding: 8 }}
-            autoComplete="email"
-          />
-        </div>
+      <label className="label">
+        Password
+        <input
+          type="password"
+          placeholder="••••••••"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          onBlur={() => setTouched((t) => ({ ...t, password: true }))}
+          className={`input ${showPasswordError ? "inputError" : ""}`}
+          disabled={isSubmitting}
+          autoComplete="current-password"
+        />
+      </label>
+      {showPasswordError && (
+        <div className="fieldError">Password is required.</div>
+      )}
 
-        <div style={{ marginBottom: 12 }}>
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            value={form.password}
-            onChange={onChange}
-            required
-            style={{ display: "block", width: "100%", padding: 8 }}
-            autoComplete="current-password"
-          />
-        </div>
-
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Logging in..." : "Login"}
-        </button>
-      </form>
-    </div>
+      <button
+        type="submit"
+        className="btn"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "Logging in..." : "Login"}
+      </button>
+    </form>
   );
 }

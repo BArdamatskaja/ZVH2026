@@ -36,8 +36,9 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Book>> getBooks () {
-        return ResponseEntity.ok(bookService.getAllBooks());
+    public ResponseEntity<List<Book>> getBooks (
+            @RequestParam(required = false) Long categoryId, @RequestParam(required = false) String title) {
+        return ResponseEntity.ok(bookService.getBooks(categoryId, title));
     }
 
     @GetMapping ("/{index}")

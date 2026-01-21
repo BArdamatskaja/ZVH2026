@@ -2,7 +2,8 @@ import httpClient from "../api/httpClient.js";
 
 const API_URL = "/api/v1/books";
 
-export const getBooks = () => httpClient.get(API_URL);
+export const getBooks = (filters = {}) =>
+  httpClient.get(API_URL, { params: filters });
 
 export const getBook = (id) => httpClient.get(`${API_URL}/${id}`);
 

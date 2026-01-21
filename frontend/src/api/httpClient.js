@@ -1,16 +1,14 @@
-// src/api/httpClient.js
 import axios from "axios";
-import { getAccessToken, clearAccessToken } from "../components/auth/authTokenService";
+import { readAuthFromStorage, clearAuthStorage } from "../components/auth/authStorage";
 
 export const httpClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  timeout: 15000, // optional, bet naudinga network scenarijams
+  timeout: 15000,
 });
 
 let isRedirectingToLogin = false;
 
 function normalizeAxiosError(error) {
-  // Network / CORS / backend down / timeout -> axios neturi response
   if (!error?.response) {
     const isTimeout = error?.code === "ECONNABORTED";
     return {
@@ -24,7 +22,6 @@ function normalizeAxiosError(error) {
   const status = error.response.status;
   const data = error.response.data;
 
-  // Bendra API klaida
   return {
     type: "api",
     status,
@@ -33,36 +30,35 @@ function normalizeAxiosError(error) {
   };
 }
 
-// Request interceptor (jūs jau turite iš ZVH2-102 – palikite, čia tik pilnas pavyzdys)
 httpClient.interceptors.request.use(
   (config) => {
-    const token = getAccessToken();
+    const stored = readAuthFromStorage();
+    const token = stored?.accessToken;
+
     if (!token) return config;
 
     config.headers = config.headers ?? {};
     if (!config.headers.Authorization) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
   (error) => Promise.reject(normalizeAxiosError(error))
 );
 
-// Response interceptor (ZVH2-103)
 httpClient.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error?.response?.status;
 
-    // 401: force logout + redirect
     if (status === 401) {
-      clearAccessToken();
+      // ✅ Vienas logout kelias: storage clear
+      clearAuthStorage();
 
-      // Guard nuo multi-redirect
       if (!isRedirectingToLogin) {
         isRedirectingToLogin = true;
 
-        // Jei jau esam /login – nereikia dar kartą
         const isAlreadyOnLogin = window.location.pathname.startsWith("/login");
         if (!isAlreadyOnLogin) {
           window.location.assign("/login?reason=expired");
@@ -76,7 +72,6 @@ httpClient.interceptors.response.use(
       });
     }
 
-    // 403: no logout, tik standartizuota klaida UI
     if (status === 403) {
       return Promise.reject({
         type: "forbidden",
@@ -86,7 +81,8 @@ httpClient.interceptors.response.use(
       });
     }
 
-    // Kitos klaidos (4xx/5xx/network)
     return Promise.reject(normalizeAxiosError(error));
   }
 );
+
+export default httpClient;

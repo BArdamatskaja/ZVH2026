@@ -19,3 +19,29 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "/register", element: <Register /> },
       { path: "/login", element: <LoginPage /> },
+
+      // Protected
+      {
+        element: <ProtectedRoute />,
+        children: [
+          { path: "/books", element: <Books /> },
+          { path: "/categories", element: <Categories /> },
+          {
+            path: "/app",
+            element: (
+              <Navigate
+                to="/books"
+                replace
+              />
+            ),
+          },
+        ],
+      },
+
+      // Fallback
+      { path: "*", element: <NotFound /> },
+    ],
+  },
+]);
+
+export default router;

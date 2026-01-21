@@ -25,3 +25,9 @@ dist-ssr
 
 # Vite cache
 .vite/
+
+# local env files
+.env
+.env.*
+!.env.example
+

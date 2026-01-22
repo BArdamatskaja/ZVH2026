@@ -14,20 +14,46 @@ export default function CategoryForm({ onSave, editCategory, onCancel }) {
     alert(
       editCategory
         ? "Category updated successfully!"
-        : "Category added successfully!"
+        : "Category added successfully!",
     );
   };
 
   return (
-    <form onSubmit={submit}>
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Category name"
-        required
-      />
-      <button>{editCategory ? "Update" : "Add"}</button>
-      {editCategory && <button onClick={onCancel}>Cancel</button>}
+    <form
+      onSubmit={submit}
+      className="form"
+    >
+      <div className="field">
+        <label className="label">Pavadinimas</label>
+        <input
+          className="input"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Pvz. Fantastika"
+          required
+        />
+      </div>
+
+      <div
+        className="row"
+        style={{ justifyContent: "flex-end" }}
+      >
+        {editCategory && (
+          <button
+            type="button"
+            className="btn btn--ghost"
+            onClick={onCancel}
+          >
+            Atšaukti
+          </button>
+        )}
+        <button
+          type="submit"
+          className="btn btn--primary"
+        >
+          {editCategory ? "Išsaugoti" : "Pridėti"}
+        </button>
+      </div>
     </form>
   );
 }

@@ -2,7 +2,7 @@ import CategoryItem from "./CategoryItem";
 
 export default function CategoryList({ categories, onEdit, onDelete }) {
   return (
-    <ul>
+    <ul className="list">
       {categories.map((C) => (
         <CategoryItem
           key={C.id}

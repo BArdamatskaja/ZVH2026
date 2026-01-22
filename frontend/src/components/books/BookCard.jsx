@@ -1,20 +1,28 @@
-import { Link } from "react-router-dom";
-
 export default function BookCard({ book }) {
   return (
-    <Link to={`/books/${book.id}`}>
-      <h3>{book.title}</h3>
-
-      <div>
-        <span>{book.category?.name}</span>
-        <span>ISBN: {book.isbn}</span>
+    <article className="card cardPad stack">
+      <div
+        className="row"
+        style={{ justifyContent: "space-between" }}
+      >
+        <h3 style={{ margin: 0 }}>{book.title}</h3>
+        {book.category?.name && (
+          <span className="badge">{book.category.name}</span>
+        )}
       </div>
 
-      <p>
-        {book.description.length > 160
-          ? book.description.slice(0, 160) + "…"
-          : book.description}
+      <div
+        className="muted"
+        style={{ fontSize: 13 }}
+      >
+        ISBN: {book.isbn}
+      </div>
+
+      <p className="muted">
+        {String(book.description ?? "").length > 160
+          ? String(book.description).slice(0, 160) + "…"
+          : String(book.description ?? "")}
       </p>
-    </Link>
+    </article>
   );
 }

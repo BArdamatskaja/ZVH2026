@@ -35,12 +35,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div>
-      <div>
-        <h1>Login</h1>
-        <p>Enter your credentials to continue.</p>
+    <div
+      className="stack"
+      style={{ maxWidth: 560, margin: "0 auto" }}
+    >
+      <div className="pageHeader">
+        <h1>Prisijungimas</h1>
+        <p className="muted">Įvesk prisijungimo duomenis, kad tęstum.</p>
+      </div>
 
-        {error && <div>{error}</div>}
+      <div className="card cardPad">
+        {error && <div className="errorBox">{error}</div>}
 
         <LoginForm
           onSubmit={handleLoginSubmit}

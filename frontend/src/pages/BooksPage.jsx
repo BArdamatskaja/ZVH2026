@@ -42,48 +42,69 @@ export default function BooksPage() {
   };
 
   return (
-    <div className="space-y-4">
-      <h2>Books</h2>
+    <div className="stack">
+      <div className="pageHeader">
+        <h1>Knygos</h1>
+        <p className="muted">
+          Filtruok pagal kategoriją ir ieškok pagal pavadinimą.
+        </p>
+      </div>
 
-      <div className="flex flex-col gap-3 md:flex-row md:items-end">
-        <div className="flex flex-col gap-1 md:w-64">
-          <label>Category</label>
-          <select
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
+      <div className="card cardPad stack">
+        <div
+          className="grid grid--2"
+          style={{ alignItems: "end" }}
+        >
+          <div className="field">
+            <label className="label">Kategorija</label>
+            <select
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+            >
+              <option value="">Visos kategorijos</option>
+              {categories.map((c) => (
+                <option
+                  key={c.id}
+                  value={c.id}
+                >
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="field">
+            <label className="label">Pavadinimas</label>
+            <input
+              className="input"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Ieškoti pagal pavadinimą..."
+            />
+          </div>
+        </div>
+
+        <div
+          className="row"
+          style={{ justifyContent: "flex-end" }}
+        >
+          <button
+            className="btn"
+            onClick={clearFilters}
           >
-            <option value="">All categories</option>
-            {categories.map((c) => (
-              <option
-                key={c.id}
-                value={c.id}
-              >
-                {c.name}
-              </option>
-            ))}
-          </select>
+            Išvalyti
+          </button>
         </div>
-
-        <div className="flex flex-1 flex-col gap-1">
-          <label>Title</label>
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Search by title..."
-          />
-        </div>
-
-        <button onClick={clearFilters}>Clear</button>
       </div>
 
       {loading && <div>Loading...</div>}
-      {error && <div className="text-red-600">{error}</div>}
+      {error && <div className="errorBox">{error}</div>}
 
       {!loading && !error && filteredBooks.length === 0 && (
-        <div>No books found.</div>
+        <div className="muted">Knygų nerasta.</div>
       )}
 
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className="grid grid--2">
         {filteredBooks.map((book) => (
           <BookCard
             key={book.id}

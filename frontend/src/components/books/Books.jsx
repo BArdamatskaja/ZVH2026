@@ -58,29 +58,39 @@ export default function Books() {
 
   const handleSave = async (bookData) => {
     setLoading(true);
-    try {
-      const payload = {
-        ...bookData,
-        categoryId: parseInt(bookData.categoryId, 10),
-        numberOfPages: parseInt(bookData.numberOfPages, 10) || 0,
-      };
+    setError("");
 
+    const payload = {
+      ...bookData,
+      categoryId: Number(bookData.categoryId),
+      numberOfPages: Number(bookData.numberOfPages),
+    };
+
+    if (!payload.categoryId || payload.categoryId <= 0) {
+      setError("Pasirink kategoriją");
+      setLoading(false);
+      return;
+    }
+
+    try {
       if (editBook) {
         await updateBook(editBook.id, payload);
       } else {
         await createBook(payload);
       }
 
-      const params = {};
-      if (categoryId) params.categoryId = categoryId;
-      if (title.trim()) params.title = title.trim();
-      await loadBooks(params);
-
+      await loadBooks();
       await loadCategories();
       setEditBook(null);
     } catch (err) {
-      console.error("Error saving book:", err);
-      setError("Error saving book");
+      const status = err?.response?.status;
+      const msg = err?.response?.data?.message || err?.response?.data;
+
+      if (status === 409) {
+        setError(msg || "Knyga su tokiu ISBN jau egzistuoja");
+      } else {
+        setError("Įvyko klaida kuriant knygą");
+      }
     } finally {
       setLoading(false);
     }

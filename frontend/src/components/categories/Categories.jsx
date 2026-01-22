@@ -13,6 +13,7 @@ export default function Categories() {
   const [categories, setCategories] = useState([]);
   const [editCategory, setEditCategory] = useState(null);
   const [searchId, setSearchId] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     loadCategories();
@@ -33,7 +34,24 @@ export default function Categories() {
 
   const handleEdit = (category) => setEditCategory(category);
 
-  const handleDelete = (id) => deleteCategory(id).then(loadCategories);
+  const handleDelete = async (id) => {
+    setError("");
+
+    try {
+      await deleteCategory(id);
+      loadCategories();
+    } catch (err) {
+      const status = err?.response?.status;
+
+      if (status === 409) {
+        setError(
+          "Šios kategorijos ištrinti negalima, nes ji priskirta vienai ar daugiau knygų.",
+        );
+      } else {
+        setError("Įvyko klaida trinant kategoriją.");
+      }
+    }
+  };
 
   const handleSearchClick = () => {
     if (!searchId) return;
@@ -54,6 +72,7 @@ export default function Categories() {
         <h1>Admin • Kategorijos</h1>
         <p className="muted">Pridėk, redaguok ir trink kategorijas.</p>
       </div>
+      {error && <div className="errorBox">{error}</div>}
 
       <div className="card cardPad stack">
         <div

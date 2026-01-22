@@ -37,18 +37,12 @@ export default function RegisterForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setSubmitAttempted(true);
 
-    // FE validacija prieš API
     if (!isFormValid) {
       setSuccessMessage("");
       setErrorMessage("");
-      setTouched({
-        email: true,
-        password: true,
-        confirmPassword: true,
-      });
+      setTouched({ email: true, password: true, confirmPassword: true });
       return;
     }
 
@@ -57,9 +51,7 @@ export default function RegisterForm() {
     setLoading(true);
 
     try {
-      // Backend'ui siunčiam tik tai, ką jis priima
       await register({ email: values.email, password: values.password });
-
       setSuccessMessage("Account created");
       setValues({ email: "", password: "", confirmPassword: "" });
       setTouched({});
@@ -70,7 +62,6 @@ export default function RegisterForm() {
         error?.response?.data?.message ||
         error?.response?.data ||
         "Registration failed";
-
       setErrorMessage(String(backendMsg));
     } finally {
       setLoading(false);
@@ -81,10 +72,20 @@ export default function RegisterForm() {
     <form
       onSubmit={handleSubmit}
       noValidate
+      className="form"
     >
-      <div>
-        <label htmlFor="email">Email</label>
+      {successMessage && <div className="successBox">{successMessage}</div>}
+      {errorMessage && <div className="errorBox">{errorMessage}</div>}
+
+      <div className="field">
+        <label
+          className="label"
+          htmlFor="email"
+        >
+          Email
+        </label>
         <input
+          className="input"
           id="email"
           name="email"
           type="email"
@@ -100,11 +101,17 @@ export default function RegisterForm() {
         )}
       </div>
 
-      <div>
-        <label htmlFor="password">Password</label>
+      <div className="field">
+        <label
+          className="label"
+          htmlFor="password"
+        >
+          Password
+        </label>
 
         <div className="password-field">
           <input
+            className="input"
             id="password"
             name="password"
             type={showPassword ? "text" : "password"}
@@ -131,9 +138,15 @@ export default function RegisterForm() {
         )}
       </div>
 
-      <div>
-        <label htmlFor="confirmPassword">Confirm password</label>
+      <div className="field">
+        <label
+          className="label"
+          htmlFor="confirmPassword"
+        >
+          Confirm password
+        </label>
         <input
+          className="input"
           id="confirmPassword"
           name="confirmPassword"
           type="password"
@@ -149,16 +162,13 @@ export default function RegisterForm() {
         )}
       </div>
 
-      {}
       <button
         type="submit"
+        className="btn btn--primary"
         disabled={loading}
       >
         {loading ? "Registering..." : "Register"}
       </button>
-
-      {successMessage && <p>{successMessage}</p>}
-      {errorMessage && <p>{errorMessage}</p>}
     </form>
   );
 }

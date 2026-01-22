@@ -2,7 +2,7 @@ import BookItem from "./BookItem";
 
 export default function BookList({ books, onEdit, onDelete }) {
   return (
-    <ul>
+    <ul className="list">
       {books.map((b) => (
         <BookItem
           key={b.id}

@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   createBook,
   deleteBook,
-  getBook,
   getBooks,
   updateBook,
 } from "../../services/bookService";
@@ -15,7 +14,6 @@ export default function Books() {
   const [categories, setCategories] = useState([]);
 
   const [editBook, setEditBook] = useState(null);
-  const [searchBook, setSearchBook] = useState("");
 
   const [categoryId, setCategoryId] = useState("");
   const [title, setTitle] = useState("");
@@ -23,15 +21,10 @@ export default function Books() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const loadCategories = () => {
-    return getCategories()
+  const loadCategories = () =>
+    getCategories()
       .then((res) => setCategories(res.data))
       .catch(() => setError("Failed to load categories"));
-  };
-
-  useEffect(() => {
-    loadCategories();
-  }, []);
 
   const loadBooks = async (filters = {}) => {
     setLoading(true);
@@ -40,13 +33,14 @@ export default function Books() {
       const res = await getBooks(filters);
       setBooks(res.data);
     } catch {
-      setError("faild to load books");
+      setError("Failed to load books");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    loadCategories();
     loadBooks();
   }, []);
 
@@ -62,26 +56,21 @@ export default function Books() {
     setTitle("");
   };
 
-  const categoryNameById = useMemo(() => {
-    const map = new Map();
-    categories.forEach((c) => map.set(String(c.id), c.name));
-    return map;
-  }, [categories]);
-
   const handleSave = async (bookData) => {
     setLoading(true);
     try {
-      const dataList = {
+      const payload = {
         ...bookData,
         categoryId: parseInt(bookData.categoryId, 10),
         numberOfPages: parseInt(bookData.numberOfPages, 10) || 0,
       };
 
       if (editBook) {
-        await updateBook(editBook.id, dataList);
+        await updateBook(editBook.id, payload);
       } else {
-        await createBook(dataList);
+        await createBook(payload);
       }
+
       const params = {};
       if (categoryId) params.categoryId = categoryId;
       if (title.trim()) params.title = title.trim();
@@ -107,31 +96,27 @@ export default function Books() {
     loadBooks(params);
   };
 
-  const handleSearchClick = () => {
-    if (!searchBook) return;
-
-    getBook(searchBook)
-      .then((res) => {
-        handleEdit(res.data);
-        setSearchBook("");
-      })
-      .catch(() => {
-        alert("Book not found!");
-      });
-  };
-
   return (
-    <div>
-      <h2>Books</h2>
-      <div>
-        <div className="flex flex-col gap-3 md:flex-row md:items-end">
-          <div className="flex flex-col gap-1 md:w-64">
-            <label>Category</label>
+    <div className="stack">
+      <div className="pageHeader">
+        <h1>Admin • Knygos</h1>
+        <p className="muted">
+          Tvarkyk knygas: filtravimas, pridėjimas, redagavimas, trynimas.
+        </p>
+      </div>
+
+      <div className="card cardPad stack">
+        <div
+          className="grid grid--2"
+          style={{ alignItems: "end" }}
+        >
+          <div className="field">
+            <label className="label">Kategorija</label>
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
             >
-              <option value="">All categories</option>
+              <option value="">Visos kategorijos</option>
               {categories.map((c) => (
                 <option
                   key={c.id}
@@ -143,37 +128,62 @@ export default function Books() {
             </select>
           </div>
 
-          <div className="flex flex-1 flex-col gap-1">
-            <label>Title</label>
+          <div className="field">
+            <label className="label">Pavadinimas</label>
             <input
+              className="input"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Search by title..."
+              placeholder="Ieškoti pagal pavadinimą..."
             />
           </div>
-          <div className="flex gap-2">
-            <button onClick={handleApplyFilters}>Apply</button>
+        </div>
 
-            <button onClick={clearFilters}>Clear</button>
-          </div>
+        <div
+          className="row"
+          style={{ justifyContent: "flex-end" }}
+        >
+          <button
+            className="btn"
+            onClick={handleApplyFilters}
+          >
+            Taikyti
+          </button>
+          <button
+            className="btn btn--ghost"
+            onClick={clearFilters}
+          >
+            Išvalyti
+          </button>
         </div>
       </div>
-      {error && <div>{error}</div>}
 
+      {error && <div className="errorBox">{error}</div>}
       {loading && <div>Loading...</div>}
 
-      <BookForm
-        onSave={handleSave}
-        editBook={editBook}
-        onCancel={() => setEditBook(null)}
-        categories={categories}
-      />
+      <div
+        className="grid grid--2"
+        style={{ alignItems: "start" }}
+      >
+        <div className="card cardPad stack">
+          <h2>{editBook ? "Redaguoti knygą" : "Pridėti knygą"}</h2>
+          <BookForm
+            onSave={handleSave}
+            editBook={editBook}
+            onCancel={() => setEditBook(null)}
+            categories={categories}
+          />
+        </div>
 
-      <BookList
-        books={books}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+        <div className="card cardPad stack">
+          <h2>Esamos knygos</h2>
+          <BookList
+            books={books}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </div>
+      </div>
     </div>
   );
 }

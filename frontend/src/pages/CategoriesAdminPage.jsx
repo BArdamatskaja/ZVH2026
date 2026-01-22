@@ -7,7 +7,15 @@ export default function CategoriesAdminPage() {
   if (isInitializing) return null;
 
   if (!isAdmin) {
-    return <div>Access denied</div>;
+    return (
+      <div
+        className="card cardPad stack"
+        style={{ maxWidth: 720, margin: "0 auto" }}
+      >
+        <h1>Access denied</h1>
+        <p className="muted">Šis puslapis matomas tik administratoriui.</p>
+      </div>
+    );
   }
 
   return <Categories />;

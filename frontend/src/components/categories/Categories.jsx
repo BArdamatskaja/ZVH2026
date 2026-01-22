@@ -49,27 +49,63 @@ export default function Categories() {
   };
 
   return (
-    <div>
-      <h2>Categories</h2>
-      <div>
-        <input
-          type="text"
-          value={searchId}
-          onChange={(e) => setSearchId(e.target.value)}
-          placeholder="Search category by ID"
-        />
-        <button onClick={handleSearchClick}>Search</button>
+    <div className="stack">
+      <div className="pageHeader">
+        <h1>Admin • Kategorijos</h1>
+        <p className="muted">Pridėk, redaguok ir trink kategorijas.</p>
       </div>
-      <CategoryForm
-        onSave={handleSave}
-        editCategory={editCategory}
-        onCancel={() => setEditCategory(null)}
-      />
-      <CategoryList
-        categories={categories}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+
+      <div className="card cardPad stack">
+        <div
+          className="row"
+          style={{ justifyContent: "space-between" }}
+        >
+          <div
+            className="field"
+            style={{ flex: 1, minWidth: 240 }}
+          >
+            <label className="label">Paieška pagal ID</label>
+            <input
+              className="input"
+              type="text"
+              value={searchId}
+              onChange={(e) => setSearchId(e.target.value)}
+              placeholder="Pvz. 3"
+            />
+          </div>
+          <button
+            className="btn"
+            onClick={handleSearchClick}
+          >
+            Ieškoti
+          </button>
+        </div>
+      </div>
+
+      <div
+        className="grid grid--2"
+        style={{ alignItems: "start" }}
+      >
+        <div className="card cardPad stack">
+          <h2>
+            {editCategory ? "Redaguoti kategoriją" : "Pridėti kategoriją"}
+          </h2>
+          <CategoryForm
+            onSave={handleSave}
+            editCategory={editCategory}
+            onCancel={() => setEditCategory(null)}
+          />
+        </div>
+
+        <div className="card cardPad stack">
+          <h2>Esamos kategorijos</h2>
+          <CategoryList
+            categories={categories}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </div>
+      </div>
     </div>
   );
 }

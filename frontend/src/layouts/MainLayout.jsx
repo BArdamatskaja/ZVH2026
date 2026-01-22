@@ -3,10 +3,12 @@ import Header from "../components/Header";
 
 export default function MainLayout() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="appShell">
       <Header />
-      <main className="p-6">
-        <Outlet />
+      <main className="appMain">
+        <div className="container">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

@@ -47,10 +47,13 @@ public class GlobalExceptionHandler {
     // 3) Duplicate email – DB constraint fallback
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+
         ApiErrorResponse response = new ApiErrorResponse(
-                "EMAIL_ALREADY_EXISTS",
-                "Email already exists",
-                Map.of("email", "This email is already registered")
+                "DATA_INTEGRITY_VIOLATION",
+                "Database constraint violation",
+                Map.of(
+                        "detail", "Operation violates database constraints"
+                )
         );
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
